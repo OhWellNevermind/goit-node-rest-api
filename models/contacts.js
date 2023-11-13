@@ -21,7 +21,8 @@ async function listContacts() {
 
 async function getContactById(contactId) {
   try {
-    const contacts = await JSON.parse(fs.readFile(contactsPath));
+    const contactsBuffer = await fs.readFile(contactsPath);
+    const contacts = JSON.parse(contactsBuffer);
     const index = getContactIndex(contacts, contactId);
     if (index === -1) {
       return null;
@@ -60,9 +61,23 @@ async function addContact(name, email, phone) {
   }
 }
 
+async function updateContact(id, data) {
+  const contactsBuffer = await fs.readFile(contactsPath);
+  const contacts = JSON.parse(contactsBuffer);
+  const index = getContactIndex(contacts, id);
+  if (index === -1) {
+    return null;
+  }
+  const newContact = { ...contacts[index], ...data };
+  contacts[index] = newContact;
+  updateContacts(contacts);
+  return newContact;
+}
+
 export default {
   listContacts,
   getContactById,
   removeContact,
   addContact,
+  updateContact,
 };
