@@ -26,13 +26,13 @@ const getContactById = async (req, res, next) => {
 };
 
 const postContact = async (req, res, next) => {
-  const { name, email, number } = req.body;
+  const { name, email, phone } = req.body;
   try {
     const { error } = newContactSchema.validate(req.body);
     if (error) {
       throw HttpError(400, error.message);
     }
-    const newContact = await contactsService.addContact(name, email, number);
+    const newContact = await contactsService.addContact(name, email, phone);
     res.status(201).json(newContact);
   } catch (error) {
     next(error);
