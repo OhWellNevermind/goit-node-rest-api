@@ -22,7 +22,6 @@ router.put(
 router.patch(
   "/:contactId/favorite",
   isValidId,
-  isBodyEmpty,
   contactsController.updateIsContactFavourite
 );
 

@@ -55,31 +55,32 @@ const deleteContact = async (req, res, next) => {
 const updateContact = async (req, res, next) => {
   const id = req.params.contactId;
   const { error } = updateContactSchema.validate(req.body);
-  if (error) {
-    throw HttpError(400, error.message || "Missing fields");
-  }
+
   try {
+    if (error) {
+      throw HttpError(400, error.message);
+    }
     const updatedContact = await Contact.findByIdAndUpdate(id, req.body);
-    console.log(updatedContact);
-    res.status(201).json(updatedContact);
+    res.status(200).json(updatedContact);
   } catch (error) {
     next(error);
   }
 };
 
 const updateIsContactFavourite = async (req, res, next) => {
-  console.log(req.params);
   const id = req.params.contactId;
   const { error } = contactFavouriteSchema.validate(req.body);
 
-  if (error) {
-    throw HttpError(400, error.message || "Missing fields");
-  }
   try {
+    if (error) {
+      throw HttpError(400, error.message);
+    }
     const updatedContact = await Contact.findByIdAndUpdate(id, req.body);
-    console.log(updateContact);
-    console.log("adasdasad");
-    res.status(201).json(updatedContact);
+    console.log(updatedContact, "updatedContact");
+    if (!updatedContact) {
+      throw HttpError(404, "Not Found");
+    }
+    res.status(200).json(updatedContact);
   } catch (error) {
     next(error);
   }
