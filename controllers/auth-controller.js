@@ -20,7 +20,9 @@ const signup = async (req, res, next) => {
     }
     const hashPassword = await bcrypt.hash(password, 10);
     const newUser = await User.create({ ...req.body, password: hashPassword });
-    res.status(201).json({ email: newUser.email, password: newUser.password });
+    res.status(201).json({
+      user: { email: newUser.email, subscription: newUser.subscription },
+    });
   } catch (error) {
     next(error);
   }
@@ -34,9 +36,13 @@ const signin = async (req, res, next) => {
     }
 
     const { email, password } = req.body;
+    console.log(password);
     const user = await User.findOne({ email });
+    if (!user) {
+      throw HttpError(401, "Email or password is wrong");
+    }
     const passwordCompare = await bcrypt.compare(password, user.password);
-    if (!user || !passwordCompare) {
+    if (!passwordCompare) {
       throw HttpError(401, "Email or password is wrong");
     }
 
