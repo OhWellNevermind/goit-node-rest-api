@@ -7,12 +7,13 @@ import { isNoImage } from "../../middlewares/isNoImage.js";
 
 const authRouter = express.Router();
 
-authRouter.post("/register", isBodyEmpty, authController.signup);
 authRouter.post("/login", isBodyEmpty, authController.signin);
+authRouter.post("/register", isBodyEmpty, authController.signup);
 authRouter.get("/current", authenticate, authController.getCurrent);
 authRouter.post("/logout", authenticate, authController.signout);
 authRouter.patch(
   "/avatars",
+  authenticate,
   upload.single("avatarURL"),
   isNoImage,
   authenticate,

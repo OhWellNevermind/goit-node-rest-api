@@ -92,9 +92,9 @@ const updateAvatar = async (req, res, next) => {
   const image = await jimp.read(oldPath);
   await image.resize(250, 250);
   await image.writeAsync(newPath);
-  const avatarURL = path.join("public", "avatars", filename);
+  const avatarURL = path.join("avatars", filename);
+  fs.rm(oldPath);
   const result = await User.findOneAndUpdate({ _id }, { avatarURL });
-  console.log(result);
 
   res.status(200).json({ avatarURL });
 };
