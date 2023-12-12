@@ -3,7 +3,6 @@ import authController from "../../controllers/auth-controller.js";
 import { isBodyEmpty } from "../../middlewares/isBodyEmpty.js";
 import authenticate from "../../middlewares/authenticate.js";
 import { upload } from "../../middlewares/upload.js";
-import { isNoImage } from "../../middlewares/isNoImage.js";
 
 const authRouter = express.Router();
 
@@ -13,9 +12,7 @@ authRouter.get("/current", authenticate, authController.getCurrent);
 authRouter.post("/logout", authenticate, authController.signout);
 authRouter.patch(
   "/avatars",
-  authenticate,
   upload.single("avatarURL"),
-  isNoImage,
   authenticate,
   authController.updateAvatar
 );

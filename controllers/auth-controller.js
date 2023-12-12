@@ -85,18 +85,24 @@ const signout = async (req, res, next) => {
 };
 
 const updateAvatar = async (req, res, next) => {
-  const { _id } = req.user;
+  try {
+    const { _id } = req.user;
+    if (!req.file) {
+      throw HttpError(400, "Missing avatar photo");
+    }
+    const { path: oldPath, filename } = req.file;
+    const newPath = path.join(avatarsPath, filename);
+    const image = await jimp.read(oldPath);
+    await image.resize(250, 250);
+    await image.writeAsync(newPath);
+    const avatarURL = path.join("avatars", filename);
+    fs.rm(oldPath);
+    const result = await User.findOneAndUpdate({ _id }, { avatarURL });
 
-  const { path: oldPath, filename } = req.file;
-  const newPath = path.join(avatarsPath, filename);
-  const image = await jimp.read(oldPath);
-  await image.resize(250, 250);
-  await image.writeAsync(newPath);
-  const avatarURL = path.join("avatars", filename);
-  fs.rm(oldPath);
-  const result = await User.findOneAndUpdate({ _id }, { avatarURL });
-
-  res.status(200).json({ avatarURL });
+    res.status(200).json({ avatarURL });
+  } catch (error) {
+    next(error);
+  }
 };
 
 export default { signup, signin, getCurrent, signout, updateAvatar };
