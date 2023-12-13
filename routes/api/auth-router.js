@@ -16,5 +16,7 @@ authRouter.patch(
   authenticate,
   authController.updateAvatar
 );
+authRouter.get("/verify/:verificationToken", authController.verify);
+authRouter.post("/verify", isBodyEmpty, authController.resendVerification);
 
 export default authRouter;
